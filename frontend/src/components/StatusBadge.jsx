@@ -9,6 +9,6 @@ export function StatusBadge({ status, title }) {
 export function StockBadge({ inStock, quantity }) {
   if (inStock == null) return <span className="badge badge-none">Unknown</span>;
   return inStock
-    ? <span className="badge badge-success">In stock{quantity != null ? ` · ${quantity}` : ''}</span>
-    : <span className="badge badge-failed">Out of stock</span>;
+    ? <span className="badge badge-instock">In stock{quantity != null ? ` · ${quantity}` : ''}</span>
+    : <span className="badge badge-outstock">Out of stock</span>;
 }

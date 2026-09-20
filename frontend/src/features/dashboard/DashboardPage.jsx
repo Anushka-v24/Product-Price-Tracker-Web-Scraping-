@@ -36,11 +36,11 @@ export default function DashboardPage() {
       {tracked.error && <p className="error">{tracked.error}</p>}
 
       <div className="kpis">
-        <Kpi icon="box" label="Tracked products" value={items.length}
+        <Kpi tone="blue" icon="box" label="Tracked products" value={items.length}
           sub={`${items.filter((t) => t.isActive).length} with automatic checks`} />
-        <Kpi icon="check" label="In stock" value={withData.length ? `${inStock}/${withData.length}` : '—'}
+        <Kpi tone="cyan" icon="check" label="In stock" value={withData.length ? `${inStock}/${withData.length}` : '—'}
           sub={withData.length ? `${withData.length - inStock} out of stock` : 'no data yet'} />
-        <div className="kpi">
+        <div className="kpi tone-green">
           <div className="kpi-body">
             <div className="kpi-label"><Icon name="pulse" size={15} /> Success · 24h</div>
             <div className="kpi-value">{successRate == null ? '—' : `${successRate}%`}</div>
@@ -48,7 +48,7 @@ export default function DashboardPage() {
           </div>
           <RingGauge value={successRate} />
         </div>
-        <Kpi icon="bell" label="New alerts" value={alerts.data?.unreadCount ?? 0}
+        <Kpi tone="pink" icon="bell" label="New alerts" value={alerts.data?.unreadCount ?? 0}
           sub={<Link to="/alerts">View alerts →</Link>} />
       </div>
 
@@ -67,9 +67,9 @@ export default function DashboardPage() {
   );
 }
 
-function Kpi({ icon, label, value, sub }) {
+function Kpi({ tone, icon, label, value, sub }) {
   return (
-    <div className="kpi">
+    <div className={`kpi tone-${tone}`}>
       <div className="kpi-body">
         <div className="kpi-label"><Icon name={icon} size={15} /> {label}</div>
         <div className="kpi-value">{value}</div>
