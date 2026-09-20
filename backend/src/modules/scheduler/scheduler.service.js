@@ -21,20 +21,40 @@ const GRACE_MINUTES = 5;
 // While a check is in progress the product is "leased" for this long.
 const LEASE_MINUTES = 20;
 
-const lastRun = { at: null, claimed: 0, started: 0 };
+const lastRun = { at: null, claimed: 0, started: 0, source: null };
 
-export async function runDueChecks() {
+export async function runDueChecks({ graceMinutes = GRACE_MINUTES, source = 'cron' } = {}) {
   const due = await repo.claimDue({
     limit: config.scheduler.maxChecksPerRun,
-    graceMinutes: GRACE_MINUTES,
+    graceMinutes,
     leaseMinutes: LEASE_MINUTES,
   });
   const { runs } = await startChecks(due, 'schedule');
-  Object.assign(lastRun, { at: new Date().toISOString(), claimed: due.length, started: runs.length });
-  logger.info('scheduler run', { due: due.length, started: runs.length });
+  Object.assign(lastRun, { at: new Date().toISOString(), claimed: due.length, started: runs.length, source });
+  if (due.length || source === 'cron') logger.info('scheduler run', { source, due: due.length, started: runs.length });
   return { due: due.length, started: runs.length, runIds: runs.map((r) => r.id) };
 }
 
 export async function status() {
-  return { lastRun: { ...lastRun }, upcoming: await repo.upcoming() };
+  return {
+    lastRun: { ...lastRun },
+    localTimerMinutes: config.scheduler.localTimerMinutes,
+    upcoming: await repo.upcoming(),
+  };
+}
+
+/**
+ * Local development convenience (see config.scheduler.localTimerMinutes). Does the same thing
+ * cron-job.org does in production: every N minutes, run whatever is due.
+ */
+export function startLocalTimer() {
+  const minutes = config.scheduler.localTimerMinutes;
+  if (!minutes) return;
+  logger.info('local scheduler timer on (development only)', { everyMinutes: minutes });
+  const tick = () =>
+    runDueChecks({ graceMinutes: 0, source: 'local-timer' }).catch((error) =>
+      logger.error('local scheduler tick failed', { error: error.message }),
+    );
+  setTimeout(tick, 5_000).unref();
+  setInterval(tick, minutes * 60_000).unref();
 }

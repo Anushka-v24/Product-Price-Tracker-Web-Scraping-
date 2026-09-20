@@ -74,7 +74,9 @@ Render's free tier sleeps, so there's no in-process timer. cron-job.org calls
 `/api/cron/run-due` (secret-protected). The endpoint atomically **claims** due products
 (`UPDATE … WHERE id IN (SELECT … FOR UPDATE SKIP LOCKED)` with a 20-minute lease), starts checks in
 the background and returns 202 immediately. Per-product `next_check_at` makes custom intervals
-free. A failed check is retried after 30 minutes.
+free. A failed check is retried after 30 minutes. For local development only, a 1-minute
+in-process timer calls the same function (off in production via `NODE_ENV=production`), so the
+app behaves the same on a laptop that cron-job.org can't reach.
 
 ## 5. Trade-offs
 

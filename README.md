@@ -168,6 +168,10 @@ Schedule: every 15 minutes
   15 minutes simply means "check whatever is due". A 5-minute grace window absorbs timing drift.
   If you prefer, schedule it exactly every 2 hours instead; it works the same.
 - A failed check is retried after 30 minutes instead of waiting a full interval.
+- **Local development:** when `NODE_ENV` is not `production`, a small built-in timer does the same
+  job every minute, so the app works on your laptop without cron-job.org
+  (`LOCAL_SCHEDULER_MINUTES`, 0 = off). The Dockerfile sets `NODE_ENV=production`, so on Render it
+  is always off and the external cron is the only trigger.
 - Claimed products get a 20-minute lease, so overlapping cron calls never check a product twice.
 
 ## API

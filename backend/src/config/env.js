@@ -31,6 +31,11 @@ export const config = {
     maxChecksPerRun: int(process.env.MAX_CHECKS_PER_RUN, 10),
     defaultIntervalMinutes: int(process.env.DEFAULT_CHECK_INTERVAL_MINUTES, 120),
     minIntervalMinutes: 15,
+    // Local development only: a built-in timer that runs due checks every N minutes, so the app
+    // works on your laptop without cron-job.org. OFF in production (NODE_ENV=production, set in
+    // the Dockerfile) because Render's free server sleeps and would never fire it - there the
+    // external cron calls /api/cron/run-due instead. Set LOCAL_SCHEDULER_MINUTES=0 to disable.
+    localTimerMinutes: int(process.env.LOCAL_SCHEDULER_MINUTES, process.env.NODE_ENV === 'production' ? 0 : 1),
   },
 
   store: {

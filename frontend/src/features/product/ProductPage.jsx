@@ -63,8 +63,11 @@ export default function ProductPage() {
         <div className="stat"><div className="stat-label">Stock</div><div className="stat-value"><StockBadge inStock={t.latestInStock} quantity={t.latestStockQuantity} /></div></div>
         <div className="stat"><div className="stat-label">Last check</div><div className="stat-value"><StatusBadge status={t.lastRunStatus} /></div>
           <div className="muted small">{timeAgo(t.lastCheckedAt)}</div></div>
-        <div className="stat"><div className="stat-label">Next check</div><div className="stat-value small">{t.isActive ? timeAgo(t.nextCheckAt) : 'Paused'}</div>
-          <div className="muted small">{formatDateTime(t.nextCheckAt)}</div></div>
+        <div className="stat"><div className="stat-label">Next check</div>
+          <div className="stat-value small">{nextCheckText(t, running)}</div>
+          <div className="muted small">
+            {!t.isActive ? 'Automatic checks are off' : isOverdue(t) && !running ? 'Waiting for the scheduler to run it' : formatDateTime(t.nextCheckAt)}
+          </div></div>
       </div>
 
       <div className="settings">
@@ -93,6 +96,16 @@ export default function ProductPage() {
       <CheckLogTable runs={checks.data?.items ?? []} />
     </section>
   );
+}
+
+const isOverdue = (t) => new Date(t.nextCheckAt).getTime() <= Date.now();
+
+/** "in 12 min", "Checking now…", "Due now" or "Paused" - never a time in the past. */
+function nextCheckText(t, running) {
+  if (!t.isActive) return 'Paused';
+  if (running) return 'Checking now…';
+  if (isOverdue(t)) return 'Due now';
+  return timeAgo(t.nextCheckAt);
 }
 
 function HistoryTable({ points }) {
