@@ -1,0 +1,22 @@
+{
+  "name": "price-tracker-backend",
+  "version": "1.0.0",
+  "description": "Price and stock tracker for the INE demo store: REST API, scheduler endpoint and scraper",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": { "node": ">=20.12" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node src/db/migrate.js",
+    "sync-catalog": "node scripts/sync-catalog.js",
+    "scrape": "node scripts/scrape-once.js",
+    "scrape:headed": "node scripts/scrape-once.js --headed",
+    "test": "node --test --test-concurrency=1 tests/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "playwright": "1.56.0"
+  }
+}

@@ -1,0 +1,23 @@
+# Render Blueprint: Render -> New -> Blueprint -> pick this repo.
+# Secrets marked sync:false are asked for in the Render dashboard.
+services:
+  - type: web
+    name: price-tracker-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: "true"
+      - key: CRON_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false
+      - key: SCRAPER_HEADLESS
+        value: "true"
+      - key: MAX_CHECKS_PER_RUN
+        value: "5"
