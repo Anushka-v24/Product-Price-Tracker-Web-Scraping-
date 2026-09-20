@@ -195,3 +195,20 @@ code, .error-cell, .details, .activity-price { font-family: var(--font-mono); }
 .error-cell { color: var(--red); font-family: ui-monospace, monospace; font-size: .8rem; }
 .details { background: var(--bg); border: 1px solid var(--border); padding: .8rem; border-radius: 8px; font-size: .76rem; max-height: 300px; overflow: auto; white-space: pre-wrap; color: var(--muted); }
 .down { color: var(--green); font-weight: 600; } .up { color: var(--red); font-weight: 600; }
+
+/* ---------- compact product page (chart + log fit on one screen) ---------- */
+.page-head.compact { margin-bottom: .9rem; }
+.page-head.compact h1 { font-size: 1.6rem; }
+.page-head.compact p { font-size: .85rem; }
+.stats.compact { gap: .7rem; margin: .7rem 0; }
+.stats.compact .stat { padding: .6rem .9rem; }
+.stats.compact .stat-value { font-size: 1.35rem; margin-top: .2rem; }
+.stats.compact .stat-value.small { font-size: .95rem; }
+.stats.compact .small { font-size: .76rem; }
+.settings { padding: .55rem 1rem; font-size: .9rem; }
+h2 { margin: 1.3rem 0 .6rem; }
+.tabs { margin-bottom: .5rem; }
+.chart-wrap { padding: .5rem .6rem .4rem; }
+.chart-label { font-size: 13px; }
+.toast { position: fixed; right: 24px; bottom: 24px; z-index: 20; background: var(--panel-2); border: 1px solid rgba(34, 227, 160, .35); color: var(--text); padding: .7rem 1.1rem; border-radius: 10px; box-shadow: var(--glow), 0 10px 30px rgba(0, 0, 0, .4); font-size: .9rem; animation: toast-in .2s ease-out; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

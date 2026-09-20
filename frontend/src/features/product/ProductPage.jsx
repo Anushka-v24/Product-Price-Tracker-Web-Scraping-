@@ -1,5 +1,5 @@
 /** One tracked product: price chart, history table, check log, and settings. */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api/client.js';
 import { usePolling } from '../../hooks/usePolling.js';
@@ -15,6 +15,13 @@ export default function ProductPage() {
   const navigate = useNavigate();
   const [message, setMessage] = useState(null);
   const [view, setView] = useState('chart');
+
+  // Messages like "Interval updated" show as a small toast and disappear after 3 s.
+  useEffect(() => {
+    if (!message) return undefined;
+    const timer = setTimeout(() => setMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [message]);
 
   // Poll faster while a check is running so the result appears quickly.
   const product = usePolling(() => api.getTracked(id), 5000, [id]);
@@ -39,7 +46,7 @@ export default function ProductPage() {
 
   return (
     <section>
-      <div className="page-head">
+      <div className="page-head compact">
         <div>
           <h1>{t.name}</h1>
           <p className="muted">{t.brand} · {t.category} · SKU {t.sku} · store id {t.storeProductId}</p>
@@ -55,9 +62,9 @@ export default function ProductPage() {
           }}>Stop tracking</button>
         </div>
       </div>
-      {message && <p className="info">{message}</p>}
+      {message && <div className="toast">{message}</div>}
 
-      <div className="stats">
+      <div className="stats compact">
         <div className="stat"><div className="stat-label">Current price</div><div className="stat-value">{formatPrice(t.latestPrice)}</div>
           {t.latestMrp && <div className="muted small">MRP <span className="strike">{formatPrice(t.latestMrp)}</span></div>}</div>
         <div className="stat"><div className="stat-label">Stock</div><div className="stat-value"><StockBadge inStock={t.latestInStock} quantity={t.latestStockQuantity} /></div></div>

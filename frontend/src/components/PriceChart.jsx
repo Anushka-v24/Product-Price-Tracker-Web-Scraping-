@@ -6,7 +6,8 @@
 import { useId, useState } from 'react';
 import { formatPrice, formatDateTime } from '../utils/format.js';
 
-const W = 800, H = 300, PAD = { top: 24, right: 24, bottom: 40, left: 80 };
+// Wide and short, so the chart doesn't push the tables below off the screen.
+const W = 1200, H = 250, PAD = { top: 20, right: 24, bottom: 34, left: 84 };
 
 export function PriceChart({ points }) {
   const gradientId = useId().replace(/:/g, '');
@@ -33,8 +34,8 @@ export function PriceChart({ points }) {
   const pillX = Math.min(Math.max(lastX, PAD.left + 44), W - 48); // keep the price tag inside the chart
   const area = `${line} V${bottom} H${x(times[0])} Z`;
 
-  const yTicks = Array.from({ length: 5 }, (_, i) => pMin + ((pMax - pMin) * i) / 4);
-  const xTicks = tMax === tMin ? [tMin] : Array.from({ length: 4 }, (_, i) => tMin + ((tMax - tMin) * i) / 3);
+  const yTicks = Array.from({ length: 4 }, (_, i) => pMin + ((pMax - pMin) * i) / 3);
+  const xTicks = tMax === tMin ? [tMin] : Array.from({ length: 5 }, (_, i) => tMin + ((tMax - tMin) * i) / 4);
 
   // Hover: find the check closest to the mouse (in chart coordinates).
   function onMove(e) {
@@ -65,7 +66,7 @@ export function PriceChart({ points }) {
           </g>
         ))}
         {xTicks.map((t, i) => (
-          <text key={t} x={x(t)} y={H - 12} className="chart-label"
+          <text key={t} x={x(t)} y={H - 8} className="chart-label"
             textAnchor={xTicks.length === 1 ? 'middle' : i === 0 ? 'start' : i === xTicks.length - 1 ? 'end' : 'middle'}>
             {new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
           </text>
